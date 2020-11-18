@@ -1,0 +1,11 @@
+[package]
+name = "kteach-r"
+version = "0.1.0"
+authors = ["user"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+kteach-core = {path="./kteach-core"}
+synthesizer-io-core = {git="https://github.com/raphlinus/synthesizer-io"}
