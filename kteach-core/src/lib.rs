@@ -2,8 +2,6 @@
 pub mod decoder;
 pub mod output;
 pub mod player;
-pub mod source;
-pub mod state;
 #[cfg(test)]
 mod tests {
     #[test]
