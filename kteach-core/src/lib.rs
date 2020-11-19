@@ -1,5 +1,6 @@
 #![feature(associated_type_bounds)]
 pub mod decoder;
+pub mod midi;
 pub mod output;
 pub mod player;
 #[cfg(test)]

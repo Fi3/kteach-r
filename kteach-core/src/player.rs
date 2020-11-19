@@ -1,6 +1,5 @@
 //! ..
 //!
-//use crate::source::Source;
 use synthesizer_io_core::module::{Buffer, Module, N_SAMPLES_PER_CHUNK};
 
 pub type Track = Vec<[f32; N_SAMPLES_PER_CHUNK]>;

@@ -11,12 +11,12 @@ use cpal::traits::StreamTrait;
 use cpal::StreamConfig;
 use time;
 
-use rb::*;
+use rb::{Producer, RbConsumer, RbProducer, Result, SpscRb, RB};
 
 pub const BYTES_PER_SAMPLE: u16 = 32;
 
 pub struct AudioOutput {
-    ring_buf_producer: rb::Producer<f32>,
+    ring_buf_producer: Producer<f32>,
     #[allow(dead_code)]
     stream: cpal::Stream,
 }

@@ -12,3 +12,7 @@ synthesizer-io-core = {git="https://github.com/raphlinus/synthesizer-io"}
 symphonia = {version="0.1.0", features=["mp3", "flac", "wav", "ogg", "pcm"]}
 rb = "0.3.2"
 time = "0.1"
+midir = "0.7.0"
+wmidi = "4.0.1"
+# TODO use only ringbuf
+ringbuf = "0.2.2"
