@@ -537,7 +537,6 @@ version = "0.1.0"
 dependencies = [
  "cpal",
  "midir",
- "rb",
  "ringbuf",
  "symphonia",
  "synthesizer-io-core",
@@ -908,12 +907,6 @@ checksum = "aa563d17ecb180e500da1cfd2b028310ac758de548efdd203e18f283af693f37"
 dependencies = [
  "proc-macro2",
 ]
-
-[[package]]
-name = "rb"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a27f4c5756bd2bfb5942758d8168805655c62388eef0544e581a2bfa5b532f15"
 
 [[package]]
 name = "redox_syscall"

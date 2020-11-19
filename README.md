@@ -11,7 +11,7 @@ The name kteach-r pronunced /kiː/ /ˈtɛk/ /ɑː/ is composed by k teach and r.
 
 teach cause I like techno music, r cause of rust.
 
-k cause the name kteach-r is a tribute to a character of [Battlestar Galactica](https://en.wikipedia.org/wiki/Battlestar_Galactica_(2004_TV_series)
+k cause the name kteach-r is a tribute to a character of [Battlestar Galactica](https://en.wikipedia.org/wiki/Battlestar_Galactica_2004_TV_series)
 
 ## What it can do
 

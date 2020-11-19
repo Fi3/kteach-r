@@ -11,7 +11,7 @@ use cpal::traits::StreamTrait;
 use cpal::StreamConfig;
 use time;
 
-use rb::{Producer, RbConsumer, RbProducer, Result, SpscRb, RB};
+use ringbuf::{Consumer, Producer, RingBuffer};
 
 pub const BYTES_PER_SAMPLE: u16 = 32;
 
@@ -22,19 +22,19 @@ pub struct AudioOutput {
 }
 
 impl AudioOutput {
-    pub fn new(device: &cpal::Device, config: StreamConfig) -> Result<AudioOutput> {
+    pub fn new(device: &cpal::Device, config: StreamConfig) -> Result<AudioOutput, ()> {
         // Instantiate a ring buffer capable of buffering 8K (arbitrarily chosen) samples.
-        let ring_buf = SpscRb::new(8 * 1024);
-        let (ring_buf_producer, ring_buf_consumer) = (ring_buf.producer(), ring_buf.consumer());
+        let ring_buf = RingBuffer::<f32>::new(8000);
+        let (ring_buf_producer, mut ring_buf_consumer) = ring_buf.split();
 
         let stream_result = device.build_output_stream(
             &config,
             move |data: &mut [f32], _: &cpal::OutputCallbackInfo| {
                 // Write out as many samples as possible from the ring buffer to the audio
-                // output.
-                let written = ring_buf_consumer.read(data).unwrap_or(0);
-                // Mute any remaining samples.
-                data[written..].iter_mut().for_each(|s| *s = f32::MID);
+                // output. Mute any remaining samples.
+                for i in 0..data.len() {
+                    data[i] = ring_buf_consumer.pop().unwrap_or(f32::MID);
+                }
             },
             move |err| todo!("audio output error: {}", err),
         );
@@ -62,13 +62,12 @@ impl AudioOutput {
         let mut i = 0;
 
         // Write out all samples in the sample buffer to the ring buffer.
+        // Write as many samples as possible to the ring buffer. This blocks until some
+        // samples are written.
         while i < sample_buf.len() {
-            // Write as many samples as possible to the ring buffer. This blocks until some
-            // samples are written or the consumer has been destroyed (None is returned).
-            if let Some(written) = self.ring_buf_producer.write_blocking(sample_buf) {
-                i += written;
-            } else {
-                todo!()
+            match self.ring_buf_producer.push(sample_buf[i]) {
+                Ok(_) => i = i + 1,
+                Err(_) => continue, // if the buffer is full wait and then write the sample
             }
         }
     }
@@ -86,7 +85,7 @@ pub fn run_cpal(mut worker: Worker) {
     }
 }
 
-pub fn try_open() -> Result<AudioOutput> {
+pub fn try_open() -> Result<AudioOutput, ()> {
     // Get default host.
     let host = cpal::default_host();
 
