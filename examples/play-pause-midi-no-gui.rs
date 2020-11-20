@@ -3,8 +3,8 @@ use kteach_core::midi::midir::MidiOutput;
 use kteach_core::midi::ringbuf::Producer;
 use kteach_core::midi::wmidi::{Channel, MidiMessage as MidiMessage_, U7};
 use kteach_core::midi::{MidiEngine, MidiMessage};
+use kteach_core::modules::player::{Player, PlayerState};
 use kteach_core::output::run_cpal;
-use kteach_core::player::{Player, PlayerState};
 use std::fs::File;
 use std::thread;
 use std::time::Duration;
@@ -75,8 +75,8 @@ fn register_midi_map(mut buffer: Producer<(SetParam, MidiMessage)>) {
         val: 0.0,
         timestamp: 0,
     };
-    buffer.push((worker_message_play_node_0, play.into()));
-    buffer.push((worker_message_pause_node_0, pause.into()));
+    let _ = buffer.push((worker_message_play_node_0, play.into()));
+    let _ = buffer.push((worker_message_pause_node_0, pause.into()));
 }
 
 fn run_midi_output() {

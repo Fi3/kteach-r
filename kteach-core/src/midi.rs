@@ -4,7 +4,7 @@ use std::convert::TryFrom;
 use std::ops::DerefMut;
 use std::sync::{Arc, Mutex};
 use synthesizer_io_core::graph::{Message as Message_, SetParam};
-use synthesizer_io_core::queue::{Item, Queue, Receiver, Sender};
+use synthesizer_io_core::queue::{Item, Sender};
 use wmidi::{
     Channel, ControlFunction, ControlValue, MidiMessage as MidiMessage_, Note, ProgramNumber,
     Velocity,
@@ -42,7 +42,7 @@ const CONTROL_CHANGE_INDEX: usize = 3 * NUMBER_OF_MIDI_CHANNELS * NUMBER_OF_MIDI
 const PROGRAM_CHANGE_INDEX: usize = 4 * NUMBER_OF_MIDI_CHANNELS * NUMBER_OF_MIDI_OPTIONAL_INDEXES;
 const CHANNEL_PRESSURE_INDEX: usize = 5 * NUMBER_OF_MIDI_CHANNELS * NUMBER_OF_MIDI_OPTIONAL_INDEXES;
 
-type Message = Item<Message_>;
+pub type Message = Item<Message_>;
 
 /// kteach midi missage is a subset of wmidi::MidiMessage
 pub enum MidiMessage {
@@ -273,7 +273,6 @@ fn midimap_index(message: MidiMessage) -> (usize, Option<u8>) {
             CHANNEL_PRESSURE_INDEX + innner_midi_index(channel.number(), 1) as usize,
             Some(velocity.into()),
         ),
-        _ => panic!(),
     }
 }
 

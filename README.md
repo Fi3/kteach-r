@@ -93,8 +93,13 @@ loop {
 ```
 ## GUI
 
-The GUI is done with [crochet](https://github.com/raphlinus/crochet) cause I want a stable UI toolkit for rust and I think that crochet is going in the right direction so I hope that using it will help crochet to grow. Also this
-is a side project and there aren't time constraints. It is also WASM "ready".
+I want (at least at the beginning) develop 2 GUI for the core. This because:
+* I want to do a comparison between the chosen libraries.
+* Having 2 GUI help keep everything more modular.
+
+After a very superficial research the two libraries that I want to try are:
+* [crochet](https://github.com/raphlinus/crochet): the underlying concepts seems very interesting
+* [iced](https://github.com/hecrj/iced): cause I like elm
 
 ## Decoder
 

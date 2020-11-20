@@ -1,6 +1,6 @@
 use kteach_core::decoder::decode_source;
+use kteach_core::modules::player::{Player, PlayerState};
 use kteach_core::output::run_cpal;
-use kteach_core::player::{Player, PlayerState};
 //use kteach_core::state::State;
 use std::fs::File;
 use std::thread;

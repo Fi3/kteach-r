@@ -11,7 +11,7 @@ use cpal::traits::StreamTrait;
 use cpal::StreamConfig;
 use time;
 
-use ringbuf::{Consumer, Producer, RingBuffer};
+use ringbuf::{Producer, RingBuffer};
 
 pub const BYTES_PER_SAMPLE: u16 = 32;
 
