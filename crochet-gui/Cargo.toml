@@ -1,0 +1,15 @@
+[package]
+name = "crochet-gui"
+version = "0.1.0"
+authors = ["user"]
+edition = "2018"
+
+[dependencies]
+kteach-core = {path="../kteach-core"}
+crochet = {git="https://github.com/raphlinus/crochet"}
+synthesizer-io-core = {git="https://github.com/raphlinus/synthesizer-io"}
+
+[dependencies.druid]
+git = "https://github.com/linebender/druid"
+rev = "6fd8ff9c6dd4f8c628347ca7eda4f5d762ae3001"
+features = ["crochet"]
