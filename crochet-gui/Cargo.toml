@@ -6,8 +6,9 @@ edition = "2018"
 
 [dependencies]
 kteach-core = {path="../kteach-core"}
-crochet = {git="https://github.com/raphlinus/crochet"}
-synthesizer-io-core = {git="https://github.com/raphlinus/synthesizer-io"}
+crochet = {git="https://github.com/raphlinus/crochet", rev="a029a3e343f45262a73955df54755480514d853b"}
+#synthesizer-io-core = {git="https://github.com/raphlinus/synthesizer-io",rev="8bb4f5f5711613d50e673d8e7745b1068fb4089e"}
+kteach-utils={path="../utils"}
 
 [dependencies.druid]
 git = "https://github.com/linebender/druid"

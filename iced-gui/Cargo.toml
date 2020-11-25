@@ -1,0 +1,12 @@
+[package]
+name = "prova"
+version = "0.1.0"
+authors = ["Héctor Ramón Jiménez <hector0193@gmail.com>"]
+edition = "2018"
+publish = false
+
+[dependencies]
+#iced = { git = "https://github.com/hecrj/iced", features = ["glow"], rev = "87c9df294c79d73ff67a8d9a036cf9ddff24c52f"}
+iced = { git = "https://github.com/hecrj/iced", features = ["glow"]}
+kteach-core = {path="../kteach-core"}
+kteach-utils = {path="../utils"}

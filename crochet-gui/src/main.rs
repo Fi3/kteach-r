@@ -8,6 +8,7 @@ use druid::{Data, MenuDesc};
 
 mod player;
 use crate::player::{AddPlayer, Player};
+use kteach_utils::get_midi_out;
 
 struct FunctionBar {
     add_player: AddPlayer,
@@ -96,14 +97,4 @@ fn make_menu<T: Data>(_state: &MenuState) -> MenuDesc<T> {
         base = base.append(druid::platform_menus::win::file::default());
     }
     base
-}
-
-pub fn get_midi_out() -> MidiOutputConnection {
-    let midi_out = MidiOutput::new("").unwrap();
-
-    let out_ports = midi_out.ports();
-    let out_port = &out_ports[0];
-
-    let mut conn_out = midi_out.connect(&out_port, "").unwrap();
-    conn_out
 }

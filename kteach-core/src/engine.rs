@@ -7,7 +7,7 @@ use synthesizer_io_core::module::Module;
 use synthesizer_io_core::queue::{Item, Sender};
 use synthesizer_io_core::worker::Worker;
 
-struct Ids {
+pub struct Ids {
     last_id: i64,
     removed_id: Option<usize>,
 }

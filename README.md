@@ -1,9 +1,10 @@
 # kteach-r
 
 COMPOSABLE SAMPLEs PLAYER
-A sample player can play multiple sample and mix them. Can apply effect at the sample. Mixers players
-and effects are user configurable via GUI. Can record loop. Can analyze samples BPM ecc ecc. Can play
-sample in sync. Can receive midi command.
+
+A sample player that can play multiple sample and mix them. Can apply effect at the samples.
+Mixers players and effects are user configurable via GUI. Can record loop. Can analyze samples BPM ecc ecc.
+Can play sample in sync. Can receive midi command.
 
 ## Name
 
@@ -26,51 +27,15 @@ k cause the name kteach-r is a tribute to a character of [Battlestar Galactica](
     controllers)
 * 3 modalities editing, browse, performance, build
 
-
-tutti i messaggi durante performance arrivano via midi, se qlks viene fatto dall gui viene tradotto
-in midi. build mode descrive come le varie source sono collegate tra di loro e viene scritto in un
-file di config toml (se per esempio voglio un effetto splittabile tra due source colelgero le source
-ad un mixer e queste ad un effetto poi durante performance con midi decido come dirigere il
-segnale) in build mode viene anche definito tutta la midi mapp.
-A GUI is provided but it should be possible to run kteach against other GUI for example when
-embedded.
+## Examples
+kteach-r is composed by a [core](kteach-core/Cargo.toml) and [2 GUIs](##GUI). Example of how to use the core API without all the overhead of the graphical interfaces are in [examples](kteach-core/examples)
+**parsing mp3 in debug mode is pretty slow, better to use --release**
 
 ## Non goal
 
-E' principalmente un esperimento quindi per ora aperto verso qualsiasi direzione.
+It mostly an experiment so for now every direction is a good one.
 
 ## Architecture
-
-loop {
-  state = get state
-  /// next1 = next(audio source, state)
-  /// next2 = next(audio source, state)
-  /// next3 = next(audio source, state)
-  /// next is {sample: (left, right), destination: impl trait Destination}
-  /// audio source impl trait origin
-  /// a node usally implement both Origin and Destination
-  /// output is a buffer that implement only destination and each x time
-  /// must be filled with new data
-  /// at each round of the loop the samples flow from origin to destinations
-  /// if destination is output the increments the buffer, there are exactly
-  /// x round of loop in a second. For each round something must be written on the
-  /// output, for silence output will be filled with 0s
-  /// State define how the nodes (Destination and Sources) are connected. And
-  /// how each destination or source is setted. State is filled in the real time
-  /// thread from the GUI and MIDI threads.
-  /// Initial sources are filled in the real time thread from the decoder
-  /// Construct the state tree at each round could be wasteful
-  /// visto che si va sullo stereo si puo usare due thread
-  /// essendo le operazioni sequenziali si puo implementare una pipeline?>? in 
-  /// realta se state cambia la pipelin va a farsi fottere quindi non so quanto co
-  /// nvenga.
-  /// di sicuro studiare fearless_simd
-  /// allinizio convertire qualsiasi tipo di signal a due segnali mono con precisa
-  /// bitrate inizialmente solo un bitrate e' supportato! nel senso che quando
-  /// lanci app scegli il bitrate e tutti i sample caricati sono convertiti a quel
-  /// bitrate
-  nexts = map(sources, x => next(x, state))
-
 ```
                              ____  ____     
                           /\/    \/    \/\/\                                   .
@@ -102,18 +67,24 @@ After a very superficial research the two libraries that I want to try are:
 * [iced](https://github.com/hecrj/iced): cause I like elm
 
 ## Decoder
-
 [Symphonia](https://github.com/pdeljanov/Symphonia) is the decoder. Cause is pure rust and it seems
 the most completely option. It is also WASM ready.
 
 ## Reproduce audio
 [cpal](https://docs.rs/cpal/0.13.1/cpal/) is used to play audio cause it seems the defacto standard in rust.
 
-## Goals and non Goals
+## RealTime audio engine
+[synthesizer-io-core](https://github.com/raphlinus/synthesizer-io) is used as RT audio engine.
+
+## Midi
+[midir](https://github.com/Boddlnagg/midir) is used in order to send and receive midi messages.
+[wmidi](https://github.com/RustAudio/wmidi) is used to serialize and deserialize midi messages.
+
 
 ## Milestones
 
-- [ ] sample player (pause and play)
+- [x] sample player (pause and play)
+- [ ] multi players support (pause and play)
 - [ ] 2-channel mixer
 - [ ] sample player position
 - [ ] sample player (play from)
@@ -123,9 +94,9 @@ the most completely option. It is also WASM ready.
 - [ ] sample player sync
 - [ ] n-channel mixer
 - [ ] effects (at least a delay and a reverb and a low/high pass)
-- [ ] sample recorder
-- [ ] MIDI signal
+- [ ] config file (midi and player/mixer/effect)
 - [ ] sample analyzer (BPM and key and autogain)
+- [ ] sample recorder
 - [ ] file browser
 
 ## Useful crates
@@ -159,4 +130,6 @@ the most completely option. It is also WASM ready.
     TODO
 * https://github.com/padenot/audio_thread_priority
     TODO
+* https://github.com/BillyDM/iced_audio
+    Audio widgets for iced
  

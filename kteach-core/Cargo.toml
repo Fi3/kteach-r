@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 cpal = "0.13.1"
+#synthesizer-io-core = {git="https://github.com/raphlinus/synthesizer-io", rev="8bb4f5f5711613d50e673d8e7745b1068fb4089e"}
 synthesizer-io-core = {git="https://github.com/raphlinus/synthesizer-io"}
 symphonia = {version="0.1.0", features=["mp3", "flac", "wav", "ogg", "pcm"]}
 time = "0.1"
