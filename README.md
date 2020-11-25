@@ -28,12 +28,12 @@ k cause the name kteach-r is a tribute to a character of [Battlestar Galactica](
 * 3 modalities editing, browse, performance, build
 
 ## Examples
-kteach-r is composed by a [core](kteach-core/Cargo.toml) and [2 GUIs](##GUI). Example of how to use the core API without all the overhead of the graphical interfaces are in [examples](kteach-core/examples)
-**parsing mp3 in debug mode is pretty slow, better to use --release**
+kteach-r is composed by a [core](kteach-core/Cargo.toml) and [2 GUIs](#GUI). Example of how to use the core API without all the overhead of the graphical interfaces are in [examples](kteach-core/examples)
+**parsing mp3 in debug mode is pretty slow, better to use** `cargo run --release`
 
 ## Non goal
 
-It mostly an experiment so for now every direction is a good one.
+kteach-r is mostly an experiment so for now every direction is a good one.
 
 ## Architecture
 ```
@@ -68,7 +68,7 @@ After a very superficial research the two libraries that I want to try are:
 
 ## Decoder
 [Symphonia](https://github.com/pdeljanov/Symphonia) is the decoder. Cause is pure rust and it seems
-the most completely option. It is also WASM ready.
+the most complete option. It is also WASM ready.
 
 ## Reproduce audio
 [cpal](https://docs.rs/cpal/0.13.1/cpal/) is used to play audio cause it seems the defacto standard in rust.
