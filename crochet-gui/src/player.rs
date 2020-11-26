@@ -1,4 +1,4 @@
-use crochet::{Button, Column, Cx, Label, TextBox};
+use crochet::{Button, Column, Cx, Label};
 use kteach_core::engine::Engine;
 use kteach_core::midi::midir::MidiOutputConnection;
 use kteach_utils::{get_path, load_core_player, pause, play};
@@ -52,7 +52,7 @@ impl TryFrom<(&String, &mut Engine)> for Player {
 
     fn try_from(value: (&String, &mut Engine)) -> Result<Self, Self::Error> {
         let (path, engine) = value;
-        let id = load_core_player(path, engine);
+        let id = load_core_player(engine, path, &[], true);
         Ok(Player::new(path.clone(), id))
     }
 }

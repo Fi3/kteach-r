@@ -47,8 +47,9 @@ impl Module for Player {
         }
     }
 
-    fn set_param(&mut self, param_ix: usize, _val: f32, _timestamp: u64) {
-        match param_ix {
+    fn set_param(&mut self, _param_ix: usize, val: f32, _timestamp: u64) {
+        let val = val as u8;
+        match val {
             0 => self.state = PlayerState::Play,
             1 => self.state = PlayerState::Pause,
             _ => (),

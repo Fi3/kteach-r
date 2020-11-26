@@ -1,5 +1,5 @@
 use kteach_core::engine::Engine;
-use kteach_core::midi::midir::{MidiOutput, MidiOutputConnection};
+use kteach_core::midi::midir::MidiOutputConnection;
 
 use druid::{AppLauncher, PlatformError, Widget, WindowDesc};
 

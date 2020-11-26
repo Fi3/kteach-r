@@ -12,7 +12,7 @@ fn main() {
 
     let mut engine = Engine::new();
 
-    let id = engine.add_module(module);
+    let id = engine.add_module(module, &[]);
     println!("{}", id);
 
     loop {

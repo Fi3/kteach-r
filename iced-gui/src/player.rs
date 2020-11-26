@@ -17,7 +17,7 @@ pub struct Player {
 
 impl Player {
     pub fn new(path: String, index: usize, engine: &mut Engine) -> Self {
-        let id = load_core_player(&path, engine);
+        let id = load_core_player(engine, &path, &[], true);
         Player {
             path,
             play: button::State::new(),

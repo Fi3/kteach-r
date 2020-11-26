@@ -7,12 +7,22 @@ use nfd::Response;
 use std::fs::File;
 use synthesizer_io_core::graph::SetParam;
 
-pub fn load_core_player(path: &String, mut engine: &mut Engine) -> u8 {
+pub fn load_core_player(
+    mut engine: &mut Engine,
+    path: &String,
+    audio_in_out: &[(usize, usize)],
+    is_root: bool,
+) -> u8 {
     let file = File::open(path.clone()).unwrap();
     let track = decode_source(file, Some("mp3"));
-    let player = CorePlayer::new(track.clone(), None, Some(CorePlayerState::Play));
+    let player = CorePlayer::new(track.clone(), None, Some(CorePlayerState::Pause));
     let module = Box::new(player);
-    let id = engine.add_module(module) as u8;
+    let id: u8;
+    if is_root {
+        id = engine.add_root(module, audio_in_out) as u8;
+    } else {
+        id = engine.add_module(module, audio_in_out) as u8;
+    }
     register_midi_map(&mut engine, id);
     id
 }
@@ -24,13 +34,13 @@ pub fn get_play_pause_midi_messages<'a>(id: u8) -> (MidiMessage_<'a>, MidiMessag
     unsafe {
         play = MidiMessage_::ControlChange(
             Channel::from_index(0).unwrap(),
-            U7::from_unchecked(0).into(),
-            U7::from_unchecked(id),
+            U7::from_unchecked(id).into(),
+            U7::from_unchecked(0),
         );
         pause = MidiMessage_::ControlChange(
             Channel::from_index(0).unwrap(),
-            U7::from_unchecked(1).into(),
-            U7::from_unchecked(id),
+            U7::from_unchecked(id).into(),
+            U7::from_unchecked(1),
         );
     }
     (play, pause)
@@ -61,6 +71,7 @@ pub fn play(midi_out: &mut MidiOutputConnection, id: u8) {
     let play_ = &play_[..play.bytes_size()];
     let _ = midi_out.send(play_);
 }
+
 pub fn pause(midi_out: &mut MidiOutputConnection, id: u8) {
     let (_, pause) = get_play_pause_midi_messages(id);
     let mut pause_ = [0_u8; 20];

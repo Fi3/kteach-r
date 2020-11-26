@@ -10,12 +10,22 @@ impl Module for Root {
         &mut self,
         _control_in: &[f32],
         _control_out: &mut [f32],
-        _buf_in: &[&Buffer],
+        buf_in: &[&Buffer],
         buf_out: &mut [Buffer],
     ) {
         let out = buf_out[0].get_mut();
-        for i in 0..out.len() {
-            out[i] = 0.0;
+        match buf_in.len() {
+            0 => {
+                for i in 0..out.len() {
+                    out[i] = 0.0;
+                }
+            }
+            _ => {
+                let in_ = buf_in[0].get();
+                for i in 0..out.len() {
+                    out[i] = in_[i];
+                }
+            }
         }
     }
 }

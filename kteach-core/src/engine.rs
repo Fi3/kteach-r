@@ -49,6 +49,8 @@ impl Engine {
 
         midi_engine.connect_all();
 
+        // Only use to instaciate the graph (it would crash without that) then will be replaced
+        // by the first added module
         let module = Box::new(Root {});
         worker_sender.send(Message_::Node(Node::create(module, 0, [], [])));
 
@@ -76,11 +78,21 @@ impl Engine {
         }
     }
 
-    pub fn add_module(&mut self, module: Box<dyn Module>) -> usize {
+    pub fn add_module(
+        &mut self,
+        module: Box<dyn Module>,
+        audio_in_out: &[(usize, usize)],
+    ) -> usize {
         let id = self.ids.new_id();
         self.worker_sender
-            .send(Message_::Node(Node::create(module, id, [], [])));
+            .send(Message_::Node(Node::create(module, id, audio_in_out, [])));
         id
+    }
+
+    pub fn add_root(&mut self, module: Box<dyn Module>, audio_in_out: &[(usize, usize)]) -> usize {
+        self.worker_sender
+            .send(Message_::Node(Node::create(module, 0, audio_in_out, [])));
+        0
     }
 
     pub fn register_midi_message<T: Into<MidiMessage>>(
