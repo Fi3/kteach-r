@@ -1,4 +1,5 @@
 use crate::midi::{MidiEngine, MidiMessage};
+use crate::modules::mixer::Mixer;
 use crate::modules::root::Root;
 use crate::output::run_cpal;
 use ringbuf::Producer;
@@ -38,6 +39,7 @@ pub struct Engine {
     worker_sender: Sender<Message_>,
     midi_control_buffer: Producer<(SetParam, MidiMessage)>,
     ids: Ids,
+    root: Vec<(usize, usize)>,
 }
 
 impl Engine {
@@ -75,6 +77,7 @@ impl Engine {
             worker_sender,
             midi_control_buffer,
             ids: Ids::new(),
+            root: Vec::new(),
         }
     }
 
@@ -90,9 +93,30 @@ impl Engine {
     }
 
     pub fn add_root(&mut self, module: Box<dyn Module>, audio_in_out: &[(usize, usize)]) -> usize {
+        let mut new_root = Vec::new();
+        for link in audio_in_out {
+            new_root.push(*link);
+        }
+        self.root = new_root;
         self.worker_sender
             .send(Message_::Node(Node::create(module, 0, audio_in_out, [])));
         0
+    }
+
+    pub fn add(&mut self, module: Box<dyn Module>, audio_in_out: &[(usize, usize)]) -> usize {
+        let id = self.ids.new_id();
+        self.worker_sender
+            .send(Message_::Node(Node::create(module, id, audio_in_out, [])));
+        self.root.push((id, 0));
+        self.update_root();
+        id
+    }
+
+    fn update_root(&mut self) {
+        let mixer = Box::new(Mixer {});
+        let audio_in_out = &self.root[0..];
+        self.worker_sender
+            .send(Message_::Node(Node::create(mixer, 0, audio_in_out, [])));
     }
 
     pub fn register_midi_message<T: Into<MidiMessage>>(

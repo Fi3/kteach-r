@@ -11,18 +11,12 @@ pub fn load_core_player(
     mut engine: &mut Engine,
     path: &String,
     audio_in_out: &[(usize, usize)],
-    is_root: bool,
 ) -> u8 {
     let file = File::open(path.clone()).unwrap();
     let track = decode_source(file, Some("mp3"));
     let player = CorePlayer::new(track.clone(), None, Some(CorePlayerState::Pause));
     let module = Box::new(player);
-    let id: u8;
-    if is_root {
-        id = engine.add_root(module, audio_in_out) as u8;
-    } else {
-        id = engine.add_module(module, audio_in_out) as u8;
-    }
+    let id = engine.add(module, audio_in_out) as u8;
     register_midi_map(&mut engine, id);
     id
 }

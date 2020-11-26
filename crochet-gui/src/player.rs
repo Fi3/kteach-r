@@ -52,7 +52,7 @@ impl TryFrom<(&String, &mut Engine)> for Player {
 
     fn try_from(value: (&String, &mut Engine)) -> Result<Self, Self::Error> {
         let (path, engine) = value;
-        let id = load_core_player(engine, path, &[], true);
+        let id = load_core_player(engine, path, &[]);
         Ok(Player::new(path.clone(), id))
     }
 }
