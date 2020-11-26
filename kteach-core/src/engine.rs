@@ -15,7 +15,7 @@ pub struct Ids {
 impl Ids {
     pub fn new() -> Self {
         Ids {
-            last_id: -1,
+            last_id: 0,
             removed_id: None,
         }
     }

@@ -27,18 +27,19 @@ pub fn load_core_player(
     id
 }
 
+// TODO channel should be defined in config file
 pub fn get_play_pause_midi_messages<'a>(id: u8) -> (MidiMessage_<'a>, MidiMessage_<'a>) {
     let play: MidiMessage_;
     let pause: MidiMessage_;
 
     unsafe {
         play = MidiMessage_::ControlChange(
-            Channel::from_index(0).unwrap(),
+            Channel::from_index(15).unwrap(),
             U7::from_unchecked(id).into(),
             U7::from_unchecked(0),
         );
         pause = MidiMessage_::ControlChange(
-            Channel::from_index(0).unwrap(),
+            Channel::from_index(15).unwrap(),
             U7::from_unchecked(id).into(),
             U7::from_unchecked(1),
         );
@@ -48,20 +49,45 @@ pub fn get_play_pause_midi_messages<'a>(id: u8) -> (MidiMessage_<'a>, MidiMessag
 
 pub fn register_midi_map(engine: &mut Engine, id: u8) {
     let (play, pause) = get_play_pause_midi_messages(id);
-    let worker_message_play_node_0 = SetParam {
+    let worker_message_play = SetParam {
         ix: id as usize,
         param_ix: 0,
         val: 0.0,
         timestamp: 0,
     };
-    let worker_message_pause_node_0 = SetParam {
+    let worker_message_pause = SetParam {
         ix: id as usize,
         param_ix: 1,
         val: 0.0,
         timestamp: 0,
     };
-    engine.register_midi_message(worker_message_play_node_0, play);
-    engine.register_midi_message(worker_message_pause_node_0, pause);
+    engine.register_midi_message(worker_message_play, play);
+    engine.register_midi_message(worker_message_pause, pause);
+}
+
+// TODO channel should be defined in config file
+pub fn get_gain_midi_messages<'a>(id: u8, value: u8) -> MidiMessage_<'a> {
+    let gain: MidiMessage_;
+
+    unsafe {
+        gain = MidiMessage_::ControlChange(
+            Channel::from_index(15).unwrap(),
+            U7::from_unchecked(id).into(),
+            U7::from_unchecked(value).into(),
+        );
+    }
+    gain
+}
+
+pub fn register_midi_map_gain(engine: &mut Engine, id: u8) {
+    let gain = get_gain_midi_messages(id, 0);
+    let worker_message_gain = SetParam {
+        ix: id as usize,
+        param_ix: 0,
+        val: 0.0,
+        timestamp: 0,
+    };
+    engine.register_midi_message(worker_message_gain, gain);
 }
 
 pub fn play(midi_out: &mut MidiOutputConnection, id: u8) {
@@ -78,6 +104,14 @@ pub fn pause(midi_out: &mut MidiOutputConnection, id: u8) {
     pause.copy_to_slice(&mut pause_).unwrap();
     let pause_ = &pause_[..pause.bytes_size()];
     let _ = midi_out.send(pause_);
+}
+
+pub fn gain(midi_out: &mut MidiOutputConnection, id: u8, value: u8) {
+    let gain = get_gain_midi_messages(id, value);
+    let mut gain_ = [0_u8; 20];
+    gain.copy_to_slice(&mut gain_).unwrap();
+    let gain_ = &gain_[..gain.bytes_size()];
+    let _ = midi_out.send(gain_);
 }
 
 pub fn get_midi_out() -> MidiOutputConnection {

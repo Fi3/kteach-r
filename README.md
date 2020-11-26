@@ -18,7 +18,7 @@ k cause the name kteach-r is a tribute to a character of [Battlestar Galactica](
 
 * 1 kind of sample/track player (play, pause, loop, pitch, tempo)
 * several kinds of effects (volume, echo, ...)
-* 1 kind of mixer (2 source 1 output)
+* 1 kind of mixer (n source 1 output)
 * 1 kind of recorder
 * everything above composable via GUI
 * control via MIDI
@@ -84,15 +84,15 @@ the most complete option. It is also WASM ready.
 ## Milestones
 
 - [x] sample player (pause and play)
-- [ ] multi players support (pause and play)
-- [ ] 2-channel mixer
+- [x] multi players support (pause and play)
+- [x] n-channel mixer
+- [x] add gain (as effect)
 - [ ] sample player position
 - [ ] sample player (play from)
 - [ ] sample player speed
 - [ ] sample player speed with same pitch
 - [ ] sample player waveform
 - [ ] sample player sync
-- [ ] n-channel mixer
 - [ ] effects (at least a delay and a reverb and a low/high pass)
 - [ ] config file (midi and player/mixer/effect)
 - [ ] sample analyzer (BPM and key and autogain)
