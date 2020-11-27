@@ -22,6 +22,7 @@ pub enum Message {
     AddPlayer,
     Play(usize),
     Pause(usize),
+    Gain(u8, usize),
 }
 
 impl Sandbox for Kteach {
@@ -60,6 +61,9 @@ impl Sandbox for Kteach {
             }
             Message::Play(index) => {
                 self.players[index].play(&mut self.midi_out);
+            }
+            Message::Gain(gain, index) => {
+                self.players[index].gain(&mut self.midi_out, gain);
             }
         }
     }

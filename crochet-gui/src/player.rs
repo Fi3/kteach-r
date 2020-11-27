@@ -1,7 +1,7 @@
-use crochet::{Button, Column, Cx, Label};
+use crochet::{Button, Column, Cx, Label, Row};
 use kteach_core::engine::Engine;
 use kteach_core::midi::midir::MidiOutputConnection;
-use kteach_utils::{get_path, load_core_player, pause, play};
+use kteach_utils::{gain, get_path, load_core_player, pause, play};
 use std::convert::{TryFrom, TryInto};
 
 enum PlayerState {
@@ -9,18 +9,24 @@ enum PlayerState {
     Pause,
 }
 
+/// A Player and a Gain
+/// gain values (0,128)
 pub struct Player {
     path: String,
     play: PlayerState,
     id: u8,
+    gain: u8,
+    gain_id: u8,
 }
 
 impl Player {
-    pub fn new(path: String, id: u8) -> Self {
+    pub fn new(path: String, id: u8, gain_id: u8) -> Self {
         Player {
             path,
             play: PlayerState::Pause,
             id,
+            gain_id,
+            gain: 127,
         }
     }
 
@@ -35,14 +41,33 @@ impl Player {
             )
             .build(cx);
 
-            if Button::new("PLAY").build(cx) {
-                play(midi_out, self.id);
-                self.play = PlayerState::Play;
-            }
-            if Button::new("PAUSE").build(cx) {
-                pause(midi_out, self.id);
-                self.play = PlayerState::Pause;
-            }
+            Row::new().build(cx, |cx| {
+                if Button::new("PLAY").build(cx) {
+                    play(midi_out, self.id);
+                    self.play = PlayerState::Play;
+                }
+                if Button::new("PAUSE").build(cx) {
+                    pause(midi_out, self.id);
+                    self.play = PlayerState::Pause;
+                }
+            });
+            Row::new().build(cx, |cx| {
+                if Button::new("↑").build(cx) {
+                    self.gain = self.gain + 1;
+                    if self.gain > 127 {
+                        self.gain = 0;
+                    }
+                    gain(midi_out, self.gain_id, self.gain);
+                }
+                if Button::new("↓").build(cx) {
+                    self.gain = self.gain - 1;
+                    if self.gain > 127 {
+                        self.gain = 127;
+                    }
+                    gain(midi_out, self.gain_id, self.gain);
+                }
+                Label::new(format!("{}", self.gain)).build(cx);
+            })
         })
     }
 }
@@ -52,8 +77,8 @@ impl TryFrom<(&String, &mut Engine)> for Player {
 
     fn try_from(value: (&String, &mut Engine)) -> Result<Self, Self::Error> {
         let (path, engine) = value;
-        let id = load_core_player(engine, path, &[]);
-        Ok(Player::new(path.clone(), id))
+        let (id, gain_id) = load_core_player(engine, path);
+        Ok(Player::new(path.clone(), id, gain_id))
     }
 }
 

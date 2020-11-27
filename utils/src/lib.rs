@@ -2,23 +2,30 @@ use kteach_core::decoder::decode_source;
 use kteach_core::engine::Engine;
 use kteach_core::midi::midir::{MidiOutput, MidiOutputConnection};
 use kteach_core::midi::wmidi::{Channel, MidiMessage as MidiMessage_, U7};
-use kteach_core::modules::player::{Player as CorePlayer, PlayerState as CorePlayerState};
+use kteach_core::modules::gain::Gain;
+use kteach_core::modules::player::{Player, PlayerState};
 use nfd::Response;
 use std::fs::File;
 use synthesizer_io_core::graph::SetParam;
 
-pub fn load_core_player(
-    mut engine: &mut Engine,
-    path: &String,
-    audio_in_out: &[(usize, usize)],
-) -> u8 {
+pub fn load_core_player(mut engine: &mut Engine, path: &String) -> (u8, u8) {
+    // Open and decode audio source
     let file = File::open(path.clone()).unwrap();
     let track = decode_source(file, Some("mp3"));
-    let player = CorePlayer::new(track.clone(), None, Some(CorePlayerState::Pause));
-    let module = Box::new(player);
-    let id = engine.add(module, audio_in_out) as u8;
+
+    // Create and load the player
+    let player = Player::new(track.clone(), None, Some(PlayerState::Pause));
+    let player = Box::new(player);
+    let id = engine.add_module(player, &[]) as u8;
     register_midi_map(&mut engine, id);
-    id
+
+    // Create and load the gain of the player
+    let gain = Gain::new();
+    let gain = Box::new(gain);
+    let gain_id = engine.add(gain, &[(id as usize, 0)]) as u8;
+    register_midi_map_gain(&mut engine, gain_id);
+
+    (id, gain_id)
 }
 
 // TODO channel should be defined in config file
